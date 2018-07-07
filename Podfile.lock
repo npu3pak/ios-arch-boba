@@ -1,0 +1,56 @@
+PODS:
+  - FormEditor (0.9.1)
+  - KeychainSwift (9.0.2)
+  - LGSideMenuController (2.1.1)
+  - MBProgressHUD (1.1.0)
+  - SegueCoordinator (0.6.0)
+  - SVPullToRefresh (0.4.1)
+  - SwiftDate (4.3.0)
+  - XLPagerTabStrip (7.0.0)
+
+DEPENDENCIES:
+  - FormEditor (from `https://github.com/npu3pak/ios-lib-form-editor.git`)
+  - KeychainSwift (~> 9.0.2)
+  - LGSideMenuController (= 2.1.1)
+  - MBProgressHUD (~> 1.0)
+  - SegueCoordinator (from `https://github.com/npu3pak/ios-lib-segue-coordinator.git`)
+  - SVPullToRefresh (= 0.4.1)
+  - SwiftDate (~> 4.3.0)
+  - XLPagerTabStrip (~> 7.0)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - KeychainSwift
+    - LGSideMenuController
+    - MBProgressHUD
+    - SVPullToRefresh
+    - SwiftDate
+    - XLPagerTabStrip
+
+EXTERNAL SOURCES:
+  FormEditor:
+    :git: https://github.com/npu3pak/ios-lib-form-editor.git
+  SegueCoordinator:
+    :git: https://github.com/npu3pak/ios-lib-segue-coordinator.git
+
+CHECKOUT OPTIONS:
+  FormEditor:
+    :commit: f060e477f45484dd5266007db3679869577bfeb3
+    :git: https://github.com/npu3pak/ios-lib-form-editor.git
+  SegueCoordinator:
+    :commit: 303456eefc9cbe3b9fadaddfd4a7819e58030cc0
+    :git: https://github.com/npu3pak/ios-lib-segue-coordinator.git
+
+SPEC CHECKSUMS:
+  FormEditor: ecbe5dbb746c67b205b6f5ecebb3dd1a3f096615
+  KeychainSwift: 3ab1d428d0dbff59cd056f1d0bfc640b36c2b081
+  LGSideMenuController: ae40c80983ab8b8801c7cef0a6804d43aaa72d45
+  MBProgressHUD: e7baa36a220447d8aeb12769bf0585582f3866d9
+  SegueCoordinator: 7169d0c21cd5befd495d2d2cff5528101baa996c
+  SVPullToRefresh: ba2e718695a43253d8bea6852d2960097dc15d8c
+  SwiftDate: 64e2312711c5c506f7b51794308ce91f19eb494a
+  XLPagerTabStrip: 9be80a66c6b7d60306b2c0a6004965016d68f813
+
+PODFILE CHECKSUM: 6603a82885c87caab1de7b3be29e42904fae3cb6
+
+COCOAPODS: 1.5.3

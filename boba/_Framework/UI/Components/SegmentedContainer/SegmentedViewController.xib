@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SegmentedViewController" customModule="SwiftModules">
+            <connections>
+                <outlet property="buttonBarView" destination="CQ0-ZV-vMo" id="XbE-Hl-fNC"/>
+                <outlet property="containerView" destination="ujF-Bf-X1B" id="cp8-uP-CI1"/>
+                <outlet property="view" destination="iN0-l3-epB" id="4Ag-v5-5Z4"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="CQ0-ZV-vMo" customClass="ButtonBarView" customModule="XLPagerTabStrip">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="50"/>
+                    <constraints>
+                        <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="50" id="Lvc-bE-RKk"/>
+                        <constraint firstAttribute="height" constant="50" id="UYO-eW-cvY"/>
+                    </constraints>
+                    <inset key="scrollIndicatorInsets" minX="15" minY="0.0" maxX="15" maxY="0.0"/>
+                    <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="cyn-9C-Dyf">
+                        <size key="itemSize" width="40" height="40"/>
+                        <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                        <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                        <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                    </collectionViewFlowLayout>
+                    <cells/>
+                </collectionView>
+                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ujF-Bf-X1B" customClass="LimittedScrollView" customModule="boba">
+                    <rect key="frame" x="0.0" y="50" width="375" height="617"/>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="leftInset">
+                            <real key="value" value="50"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                </scrollView>
+            </subviews>
+            <constraints>
+                <constraint firstItem="CQ0-ZV-vMo" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="BKI-L8-46G"/>
+                <constraint firstItem="ujF-Bf-X1B" firstAttribute="top" secondItem="CQ0-ZV-vMo" secondAttribute="bottom" id="Nxd-b1-VX4"/>
+                <constraint firstItem="ujF-Bf-X1B" firstAttribute="top" secondItem="CQ0-ZV-vMo" secondAttribute="bottom" id="SA8-IA-SYO"/>
+                <constraint firstAttribute="bottom" secondItem="ujF-Bf-X1B" secondAttribute="bottom" id="Vle-gK-7ck"/>
+                <constraint firstAttribute="trailing" secondItem="ujF-Bf-X1B" secondAttribute="trailing" id="Wjf-rt-rlH"/>
+                <constraint firstAttribute="trailing" secondItem="CQ0-ZV-vMo" secondAttribute="trailing" id="fkB-jd-YBT"/>
+                <constraint firstItem="CQ0-ZV-vMo" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="lSR-vU-7ae"/>
+                <constraint firstItem="ujF-Bf-X1B" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="wAF-bd-pNp"/>
+            </constraints>
+            <nil key="simulatedTopBarMetrics"/>
+            <point key="canvasLocation" x="24.5" y="51.5"/>
+        </view>
+    </objects>
+</document>

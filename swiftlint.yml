@@ -1,0 +1,60 @@
+excluded:
+  - Pods
+
+disabled_rules:
+  - force_cast # Часто используется для каста ячеек FECustom. Внедрение потребует существенных доработок.
+  - redundant_string_enum_value # enum у нас часто описывает протокол обмена, так что переименование поля может что-то незаметно сломать
+  - closure_parameter_position # В длинных строках это ухудшит читаемость
+  - multiple_closures_with_trailing_closure # Ухудшит читаемость
+
+  ## Со временем включить
+  - force_try
+  - xctfail_message
+  - notification_center_detachment
+  - trailing_whitespace
+
+line_length: 
+  warning: 300
+  error: 400
+
+nesting:
+  type_level: 
+    warning: 2
+
+identifier_name:
+  min_length: 2
+  max_length:
+    warning: 50
+  excluded:
+    - id
+    - tv
+    - i # индекс
+    - e # expectation в тестах
+
+type_body_length:
+  warning: 500
+  error: 1000
+
+cyclomatic_complexity:
+  warning: 35
+  error: 50
+
+type_name:
+  min_length: 3
+  max_length:
+    warning: 60
+    error: 70
+
+function_parameter_count:
+  warning: 7
+  error: 8
+
+function_body_length:
+  warning: 80
+
+file_length:
+  warning: 800
+
+large_tuple:
+  warning: 3
+  error: 10
