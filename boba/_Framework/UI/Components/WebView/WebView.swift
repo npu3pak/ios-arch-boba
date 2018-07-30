@@ -28,7 +28,7 @@ public enum WebViewUrlAction {
 public class WebView: UIView, WKNavigationDelegate {
 
     public var onStartLoadingUrl: ((URL) -> Void)?
-    
+
     public weak var loadingDelegate: WebViewLoadingDelegate?
     public weak var authDelegate: WebViewAuthDelegate?
 
@@ -39,13 +39,13 @@ public class WebView: UIView, WKNavigationDelegate {
     private var initialRequestHost: String?
 
     // Хранилище куков для iOS 10 и более ранних
-    private var legacyCookieStorage: HTTPCookieStorage?
-    
+    private var legacyCookieStorage: WebViewLegacyCookiesStore?
+
     public var uiDelegate: WKUIDelegate? {
         get { return webView.uiDelegate }
         set { webView.uiDelegate = newValue }
     }
-    
+
     public var allowBackForwardNavigationGestures: Bool {
         get { return webView.allowsBackForwardNavigationGestures }
         set { webView.allowsBackForwardNavigationGestures = newValue }
@@ -59,26 +59,17 @@ public class WebView: UIView, WKNavigationDelegate {
     /**
      Создает WebView с куками. Куки, судя по всему, должны быть помещены в хранилище до создания WebView, иначе их работа не гарантируется
      https://stackoverflow.com/a/49534854
-    */
-    public static func instantiateWithCookies(storageId: String, cookies: [HTTPCookie], frame: CGRect, configuration: WKWebViewConfiguration?, completion: @escaping (WebView) -> Void) {
+     */
+    public static func instantiateWithCookies(cookies: [HTTPCookie], frame: CGRect, configuration: WKWebViewConfiguration?, completion: @escaping (WebView) -> Void) {
         let configuration = configuration ?? defaultConfiguration()
-        
+
         // В iOS 11 используем новый механизм cookieStore. В предыдущих версиях используем HTTPCookieStorage.
         // Разница в том, что первый берет на себя всю заботу об использовании куков в каждом запросе.
         // Второй требует ручного вмешательства в куки в каждом запросе. Поэтому необходим хак, реализованный в методе делегата webView decidePolicyFor
-        
+
         guard #available(iOS 11, *) else {
-            let cookieStorage = HTTPCookieStorage.sharedCookieStorage(forGroupContainerIdentifier: storageId)
-            cookieStorage.cookieAcceptPolicy = .always
-            // Удаляем все старые куки
-            cookieStorage.removeCookies(since: Date.distantPast)
-            // Помещаем новые куки
-            for cookie in cookies {
-                cookieStorage.setCookie(cookie)
-            }
-            
             let webView = WebView(frame: frame, configuration: configuration)
-            webView.legacyCookieStorage = cookieStorage
+            webView.legacyCookieStorage = WebViewLegacyCookiesStore(cookies: cookies)
             webView.cookies = cookies
             completion(webView)
             return
@@ -94,41 +85,41 @@ public class WebView: UIView, WKNavigationDelegate {
             completion(webWiew)
         }
     }
-    
+
     public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
 
         initialize(configuration: WebView.defaultConfiguration())
     }
-    
+
     public override init(frame: CGRect) {
         super.init(frame: frame)
 
         initialize(configuration: WebView.defaultConfiguration())
     }
-    
+
     public init(frame: CGRect, disabledMagnification: Bool) {
         super.init(frame: frame)
-        
+
         let configuration: WKWebViewConfiguration = WebView.defaultConfiguration()
         if disabledMagnification {
             configuration.disableMagnification()
         }
         initialize(configuration: configuration)
     }
-    
+
     public init(frame: CGRect, configuration: WKWebViewConfiguration) {
         super.init(frame: frame)
 
         initialize(configuration: configuration)
     }
-    
+
     private static func defaultConfiguration() -> WKWebViewConfiguration {
         let configuration = WKWebViewConfiguration()
         configuration.userContentController = WKUserContentController()
         return configuration
     }
-    
+
     public func initialize(configuration: WKWebViewConfiguration) {
         webView = WKWebView(frame: bounds, configuration: configuration)
         webView.navigationDelegate = self
@@ -148,7 +139,7 @@ public class WebView: UIView, WKNavigationDelegate {
     public func reload() {
         webView.reload()
     }
-    
+
     public func load(urlString: String) {
         if let url = URL(string: urlString) {
             load(url: url)
@@ -156,12 +147,12 @@ public class WebView: UIView, WKNavigationDelegate {
             loadingDelegate?.onWebViewLoadingError(WebViewError.badUrl)
         }
     }
-    
+
     public func load(url: URL) {
         let request = URLRequest(url: url)
         load(request: request)
     }
-    
+
     private func load(request: URLRequest) {
         if #available(iOS 11, *) {
             webView.load(request)
@@ -171,9 +162,9 @@ public class WebView: UIView, WKNavigationDelegate {
             webView.load(requestWithCookies)
         }
     }
-    
-     // MARK: - Навигация
-    
+
+    // MARK: - Навигация
+
     public func webView(_ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse, decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void) {
         // На iOS 11 куки сохраняются автоматически
         if #available(iOS 11.0, *) {
@@ -187,7 +178,7 @@ public class WebView: UIView, WKNavigationDelegate {
         }
         decisionHandler(.allow)
     }
-    
+
     public func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         guard let url = navigationAction.request.url else {
             decisionHandler(.allow)
@@ -236,7 +227,7 @@ public class WebView: UIView, WKNavigationDelegate {
             decisionHandler(.allow)
         }
     }
-    
+
     public func webView(_ webView: WKWebView, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
         if let authDelegate = self.authDelegate {
             authDelegate.webView(webView, didReceive: challenge, completionHandler: completionHandler)
@@ -244,37 +235,37 @@ public class WebView: UIView, WKNavigationDelegate {
             completionHandler(.performDefaultHandling, nil)
         }
     }
-    
+
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         loadingDelegate?.onWebViewLoadingFinish()
     }
-    
+
     public func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
         onNavigationError(error)
     }
-    
+
     public func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
         onNavigationError(error)
     }
-    
+
     private func onNavigationError(_ error: Error) {
         let urlError = error as? URLError
-        
+
         if urlError != nil {
             print(urlError!.localizedDescription)
         }
-        
+
         // Игнорируем отмененные запросы
         guard urlError?.errorCode != NSURLErrorCancelled else {
             loadingDelegate?.onWebViewLoadingCancel()
             return
         }
-        
+
         loadingDelegate?.onWebViewLoadingError(WebViewError.translateFrom(error))
     }
-    
+
     // MARK: - Работа с куками
-    
+
     private func saveCookiesToStorage(from urlResponse: HTTPURLResponse) {
         guard let url = urlResponse.url else {
             return
@@ -285,13 +276,13 @@ public class WebView: UIView, WKNavigationDelegate {
         }
 
         let cookies = HTTPCookie.cookies(withResponseHeaderFields: allHeaderFields, for: url)
-        legacyCookieStorage?.setCookies(cookies, for: urlResponse.url!, mainDocumentURL: nil)
+        legacyCookieStorage?.setCookies(cookies, for: urlResponse.url!)
     }
 
     private func hasCookies(for url: URL) -> Bool {
         return legacyCookieStorage?.cookies(for: url)?.count ?? 0 > 0
     }
-    
+
     private func addingCookiesFromStorage(to request: URLRequest) -> URLRequest {
         guard let url = request.url else {
             return request

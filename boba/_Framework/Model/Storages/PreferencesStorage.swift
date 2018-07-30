@@ -10,12 +10,16 @@ import Foundation
 
 protocol PPreferencesStorage: class {
     var example: String? {get}
-    
-    func modify(transaction: (_: PreferencesStorage) -> Void)
+
+    func modify(transaction: (_: PEditablePreferencesStorage) -> Void)
     func clear()
 }
 
-class PreferencesStorage: PPreferencesStorage {
+protocol PEditablePreferencesStorage: class {
+    var example: String? {get set}
+}
+
+class PreferencesStorage: PPreferencesStorage, PEditablePreferencesStorage {
     private static let lockQueue = DispatchQueue(label: "PreferencesStorage.Lock")
 
     var example: String?
@@ -33,7 +37,7 @@ class PreferencesStorage: PPreferencesStorage {
         return storage
     }
 
-    func modify(transaction: (PreferencesStorage) -> Void) {
+    func modify(transaction: (PEditablePreferencesStorage) -> Void) {
         PreferencesStorage.lockQueue.sync {
             transaction(self)
             save()

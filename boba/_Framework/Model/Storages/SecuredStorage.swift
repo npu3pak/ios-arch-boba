@@ -12,11 +12,15 @@ import KeychainSwift
 protocol PSecuredStorage: class {
     var sessionId: String? {get}
 
-    func modify(_ transaction: (SecuredStorage) -> Void)
+    func modify(_ transaction: (PEditableSecuredStorage) -> Void)
     func clear()
 }
 
-class SecuredStorage: PSecuredStorage {
+protocol PEditableSecuredStorage: class {
+    var sessionId: String? {get set}
+}
+
+class SecuredStorage: PSecuredStorage, PEditableSecuredStorage {
 
     private static let lockQueue = DispatchQueue(label: "SecuredStorage.Lock")
     private lazy var keychain = KeychainSwift()
@@ -26,7 +30,7 @@ class SecuredStorage: PSecuredStorage {
 
     private init() { }
 
-    static var instance: SecuredStorage = SecuredStorage.load()
+    static var instance: PSecuredStorage = SecuredStorage.load()
 
     private static func load() -> SecuredStorage {
         let keychain = KeychainSwift()
@@ -36,7 +40,7 @@ class SecuredStorage: PSecuredStorage {
         return storage
     }
 
-    func modify(_ transaction: (SecuredStorage) -> Void) {
+    func modify(_ transaction: (PEditableSecuredStorage) -> Void) {
         SecuredStorage.lockQueue.sync {
             transaction(self)
             save()
